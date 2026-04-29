@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ur" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WA Bot Premium — AI WhatsApp Chatbot</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gold: { 50:'#FFF9E6',100:'#FFF0BF',200:'#FFE080',300:'#F0D060',400:'#D4AF37',500:'#C49B2A',600:'#9A7B2C',700:'#7A5F1F',800:'#5C4717',900:'#3D2E10' },
+          },
+          fontFamily: {
+            sans: ['Inter','sans-serif'],
+            display: ['Manrope','sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    ::selection{background:#D4AF37;color:#000}
+    ::-webkit-scrollbar{width:6px}
+    ::-webkit-scrollbar-track{background:#050505}
+    ::-webkit-scrollbar-thumb{background:#3D2E10;border-radius:4px}
+    ::-webkit-scrollbar-thumb:hover{background:#D4AF37}
+    @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    @keyframes ping{75%,100%{transform:scale(2);opacity:0}}
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes typingDot{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
+    @keyframes slideInLeft{from{opacity:0;transform:translateX(-20px) scale(.95)}to{opacity:1;transform:translateX(0) scale(1)}}
+    @keyframes slideInRight{from{opacity:0;transform:translateX(20px) scale(.95)}to{opacity:1;transform:translateX(0) scale(1)}}
+    @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+    @keyframes glow{0%,100%{box-shadow:0 0 20px rgba(212,175,55,.08)}50%{box-shadow:0 0 40px rgba(212,175,55,.2)}}
+    .animate-marquee{animation:marquee 30s linear infinite}
+    .animate-ping-custom{animation:ping 1s cubic-bezier(0,0,.2,1) infinite}
+    .animate-fade-in-up{animation:fadeInUp .8s ease-out forwards}
+    .animate-float{animation:float 6s ease-in-out infinite}
+    .animate-glow{animation:glow 3s ease-in-out infinite}
+    .delay-100{animation-delay:.1s}.delay-200{animation-delay:.2s}.delay-300{animation-delay:.3s}.delay-400{animation-delay:.4s}.delay-500{animation-delay:.5s}
+    .msg-left{animation:slideInLeft .3s ease-out forwards}
+    .msg-right{animation:slideInRight .3s ease-out forwards}
+    .typing-dot{animation:typingDot 1.4s infinite}
+    .typing-dot:nth-child(2){animation-delay:.2s}
+    .typing-dot:nth-child(3){animation-delay:.4s}
+    .grain{position:fixed;inset:0;z-index:50;opacity:.02;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+    .gold-gradient{background:linear-gradient(135deg,#F0D060,#D4AF37,#9A7B2C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .gold-shimmer{background:linear-gradient(90deg,#D4AF37 0%,#F0D060 25%,#D4AF37 50%,#F0D060 75%,#D4AF37 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 4s linear infinite}
+    .btn-gold{background:linear-gradient(135deg,#D4AF37,#C49B2A);color:#000;transition:all 200ms ease}
+    .btn-gold:hover{background:linear-gradient(135deg,#F0D060,#D4AF37);transform:translateY(-1px);box-shadow:0 8px 30px rgba(212,175,55,.25)}
+    .btn-outline-gold{border:1px solid rgba(212,175,55,.4);color:#D4AF37;transition:all 200ms ease}
+    .btn-outline-gold:hover{background:#D4AF37;color:#000;border-color:#D4AF37}
+    .feature-card{transition:all 500ms ease;border:1px solid rgba(212,175,55,.08)}
+    .feature-card:hover{border-color:rgba(212,175,55,.3);background:rgba(212,175,55,.02);transform:translateY(-2px)}
+    .step-card{transition:border-color 500ms ease;border:1px solid rgba(212,175,55,.08)}
+    .step-card:hover{border-color:rgba(212,175,55,.25)}
+    .pricing-card{transition:all 500ms ease;border:1px solid rgba(212,175,55,.08)}
+    .pricing-card:hover{border-color:rgba(212,175,55,.2)}
+    .chat-container{background:#0b0e11;background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4AF37' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+    .bubble-left{background:#161b22;border-radius:0 8px 8px 8px;border:1px solid rgba(212,175,55,.06)}
+    .bubble-right{background:linear-gradient(135deg,#1a1507,#16120a);border:1px solid rgba(212,175,55,.15);border-radius:8px 0 8px 8px}
+    .chat-input:focus{outline:none}
+    .quick-reply{transition:all 200ms ease;border:1px solid rgba(212,175,55,.2)}
+    .quick-reply:hover{background:rgba(212,175,55,.1);border-color:#D4AF37}
+    .divider-gold{height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,55,.2),transparent)}
+    .toast{position:fixed;bottom:2rem;right:2rem;z-index:60;background:#0f1114;border:1px solid rgba(212,175,55,.3);color:#fff;padding:1rem 1.5rem;border-radius:2px;transform:translateY(120%);opacity:0;transition:transform 400ms ease,opacity 400ms ease;font-size:14px}
+    .toast.show{transform:translateY(0);opacity:1}
+    .nav-link{transition:color 300ms ease}
+    .nav-link:hover{color:#D4AF37}
+    .social-icon{transition:color 300ms ease}
+    .social-icon:hover{color:#D4AF37}
+
+    /* Floating WhatsApp Button */
+    .wa-float{position:fixed;bottom:2rem;left:2rem;z-index:45;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#25D366,#128C7E);box-shadow:0 4px 20px rgba(37,211,102,.3);transition:all 300ms ease;cursor:pointer}
+    .wa-float:hover{transform:scale(1.1);box-shadow:0 6px 30px rgba(37,211,102,.4)}
+    .wa-float .tooltip{position:absolute;left:64px;background:#0f1114;border:1px solid rgba(212,175,55,.2);color:#e5e5e5;padding:6px 12px;border-radius:4px;font-size:12px;white-space:nowrap;opacity:0;transform:translateX(-10px);transition:all 300ms ease;pointer-events:none}
+    .wa-float:hover .tooltip{opacity:1;transform:translateX(0)}
+
+    /* Dashboard Preview */
+    .dash-bar{transition:width 1s ease-out}
+  </style>
+</head>
+<body class="bg-[#050505] text-[#e5e5e5] font-sans antialiased overflow-x-hidden">
+
+<div class="grain"></div>
+
+<!-- Decorative Blurs -->
+<div class="fixed top-[-200px] right-[-200px] w-[600px] h-[600px] rounded-full blur-[150px] pointer-events-none" style="background:radial-gradient(circle,rgba(212,175,55,.07),transparent 70%)"></div>
+<div class="fixed bottom-[-200px] left-[-200px] w-[600px] h-[600px] rounded-full blur-[150px] pointer-events-none" style="background:radial-gradient(circle,rgba(212,175,55,.04),transparent 70%)"></div>
+
+<!-- Floating WhatsApp Button -->
+<a href="https://wa.me/923209206957?text=Assalam%20o%20Alaikum!%20Mujhe%20AI%20WhatsApp%20chatbot%20chahiye." target="_blank" class="wa-float" aria-label="Chat on WhatsApp">
+  <span class="iconify text-white" data-icon="lucide:message-circle" data-width="26"></span>
+  <span class="tooltip">0320-9206957 pe chat karein</span>
+</a>
+
+<!-- ======== NAV ======== -->
+<nav class="fixed top-0 left-0 right-0 z-40" style="background:rgba(5,5,5,.85);backdrop-filter:blur(16px)">
+  <div class="max-w-screen-2xl mx-auto px-6 py-5 flex items-center justify-between">
+    <a href="#" class="font-display text-xl font-700 tracking-tight flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-sm flex items-center justify-center" style="background:linear-gradient(135deg,#D4AF37,#9A7B2C)">
+        <span class="iconify text-black" data-icon="lucide:bot" data-width="16"></span>
+      </div>
+      <span class="text-white">WA<span class="text-gold-400">Bot</span></span>
+    </a>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#features" class="nav-link text-sm text-neutral-500 font-medium uppercase tracking-widest">Features</a>
+      <a href="#demo" class="nav-link text-sm text-neutral-500 font-medium uppercase tracking-widest">Demo</a>
+      <a href="#dashboard" class="nav-link text-sm text-neutral-500 font-medium uppercase tracking-widest">Dashboard</a>
+      <a href="#pricing" class="nav-link text-sm text-neutral-500 font-medium uppercase tracking-widest">Pricing</a>
+      <a href="https://wa.me/923209206957?text=Assalam%20o%20Alaikum!%20Mujhe%20AI%20WhatsApp%20chatbot%20chahiye." target="_blank" class="btn-gold inline-flex items-center gap-2 px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded-sm">
+        <span class="iconify" data-icon="lucide:message-circle" data-width="14"></span>
+        0320-9206957
+      </a>
+    </div>
+    <button id="menuBtn" class="md:hidden text-gold-400" aria-label="Menu">
+      <span class="iconify" data-icon="lucide:menu" data-width="24"></span>
+    </button>
+  </div>
+  <div id="mobileMenu" style="max-height:0;overflow:hidden;transition:max-height 500ms ease-in-out" class="md:hidden bg-[#080808]/95 backdrop-blur-md">
+    <div class="px-6 py-6 flex flex-col gap-4">
+      <a href="#features" class="nav-link text-sm text-neutral-400 font-medium uppercase tracking-widest mobile-link">Features</a>
+      <a href="#demo" class="nav-link text-sm text-neutral-400 font-medium uppercase tracking-widest mobile-link">Demo</a>
+      <a href="#dashboard" class="nav-link text-sm text-neutral-400 font-medium uppercase tracking-widest mobile-link">Dashboard</a>
+      <a href="#pricing" class="nav-link text-sm text-neutral-400 font-medium uppercase tracking-widest mobile-link">Pricing</a>
+      <a href="https://wa.me/923209206957" target="_blank" class="btn-gold inline-flex items-center justify-center gap-2 px-6 py-3 text-xs font-bold uppercase tracking-widest rounded-sm mt-2">
+        <span class="iconify" data-icon="lucide:message-circle" data-width="14"></span>
+        WhatsApp: 0320-9206957
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ======== HERO ======== -->
+<section class="min-h-screen flex flex-col justify-center pt-32 pb-12 relative">
+  <div class="max-w-screen-2xl mx-auto px-6 w-full">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <div class="lg:col-span-7">
+        <div class="animate-fade-in-up opacity-0">
+          <div class="inline-flex items-center gap-2.5 rounded-full px-4 py-2 mb-8" style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.12)">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping-custom absolute inline-flex h-full w-full rounded-full bg-gold-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-gold-400"></span>
+            </span>
+            <span class="text-xs font-medium text-gold-400 tracking-wide">AI Powered • 24/7 Active • Urdu Ready</span>
+          </div>
+        </div>
+        <h1 class="font-display text-5xl md:text-7xl lg:text-[5.5rem] font-800 leading-[0.92] tracking-tighter animate-fade-in-up opacity-0 delay-100">
+          WhatsApp<br/>
+          <span class="gold-shimmer">AI Chatbot</span><br/>
+          <span class="text-neutral-600 font-500">premium quality</span><span class="text-gold-400">.</span>
+        </h1>
+        <p class="mt-8 text-lg font-light leading-relaxed text-neutral-500 max-w-lg animate-fade-in-up opacity-0 delay-200">
+          Customers ko WhatsApp pe <span class="text-gold-400">24/7</span> jawab dein. Orders lo, FAQs handle karo, payments collect karo — <span class="text-neutral-300">bilkul automated</span>.
+        </p>
+        <div class="mt-10 flex flex-wrap gap-4 animate-fade-in-up opacity-0 delay-300">
+          <a href="https://wa.me/923209206957?text=Assalam%20o%20Alaikum!%20Mujhe%20AI%20WhatsApp%20chatbot%20chahiye." target="_blank" class="btn-gold inline-flex items-center gap-2.5 px-8 py-4 text-xs font-bold uppercase tracking-widest rounded-sm">
+            <span class="iconify" data-icon="lucide:message-circle" data-width="16"></span>
+            WhatsApp pe Order Karein
+          </a>
+          <a href="#demo" class="btn-outline-gold inline-flex items-center gap-2 px-8 py-4 text-xs font-medium uppercase tracking-widest rounded-sm">
+            Live Demo
+            <span class="iconify" data-icon="lucide:arrow-down-right" data-width="14"></span>
+          </a>
+        </div>
+        <div class="mt-14 flex items-center gap-8 animate-fade-in-up opacity-0 delay-400">
+          <div>
+            <p class="font-display text-3xl font-700 gold-gradient">10k<span style="-webkit-text-fill-color:#D4AF37">+</span></p>
+            <p class="text-xs text-neutral-600 mt-1">Messages / Day</p>
+          </div>
+          <div class="w-px h-12" style="background:linear-gradient(180deg,transparent,rgba(212,175,55,.2),transparent)"></div>
+          <div>
+            <p class="font-display text-3xl font-700 gold-gradient">99.2<span style="-webkit-text-fill-color:#D4AF37">%</span></p>
+            <p class="text-xs text-neutral-600 mt-1">Accuracy</p>
+          </div>
+          <div class="w-px h-12" style="background:linear-gradient(180deg,transparent,rgba(212,175,55,.2),transparent)"></div>
+          <div>
+            <p class="font-display text-3xl font-700 gold-gradient">&lt;2s</p>
+            <p class="text-xs text-neutral-600 mt-1">Response</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right - Chat Preview -->
+      <div class="lg:col-span-5 flex justify-center lg:justify-end animate-fade-in-up opacity-0 delay-500">
+        <div class="w-full max-w-sm animate-float">
+          <div class="chat-container rounded-2xl overflow-hidden border animate-glow" style="border-color:rgba(212,175,55,.12)">
+            <div class="px-4 py-3 flex items-center gap-3" style="background:rgba(22,27,34,.9);border-bottom:1px solid rgba(212,175,55,.08)">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(212,175,55,.05))">
+                <span class="iconify text-gold-400" data-icon="lucide:bot" data-width="18"></span>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-medium text-white">AI Assistant</p>
+                <p class="text-[10px] text-gold-400">Online</p>
+              </div>
+              <span class="iconify text-neutral-600" data-icon="lucide:phone" data-width="16"></span>
+              <span class="iconify text-neutral-600" data-icon="lucide:more-vertical" data-width="16"></span>
+            </div>
+            <div class="px-4 py-6 space-y-3 min-h-[320px]">
+              <div class="msg-left flex justify-start">
+                <div class="bubble-left px-3 py-2 max-w-[80%]">
+                  <p class="text-sm text-[#e0ddd5]">Assalam o Alaikum! 👋 Main aapka AI assistant hoon. Kaise madad karun?</p>
+                  <p class="text-[10px] text-neutral-600 text-right mt-1">10:30 AM</p>
+                </div>
+              </div>
+              <div class="msg-right flex justify-end">
+                <div class="bubble-right px-3 py-2 max-w-[80%]">
+                  <p class="text-sm text-[#e0ddd5]">Order #VO-7842 ki status batao</p>
+                  <p class="text-[10px] text-neutral-600 text-right mt-1 flex items-center justify-end gap-1">10:30 AM <span class="iconify text-gold-400" data-icon="lucide:check-check" data-width="12"></span></p>
+                </div>
+              </div>
+              <div class="msg-left flex justify-start">
+                <div class="bubble-left px-3 py-2 max-w-[80%]">
+                  <p class="text-sm text-[#e0ddd5]">Order #VO-7842 — <span class="text-gold-400 font-medium">In Transit</span> 📦<br/>Est. delivery: <span class="text-white font-medium">Kal 5 PM</span></p>
+                  <p class="text-[10px] text-neutral-600 text-right mt-1">10:30 AM</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== MARQUEE ======== -->
+<section class="py-5 overflow-hidden" style="border-top:1px solid rgba(212,175,55,.08);border-bottom:1px solid rgba(212,175,55,.08)">
+  <div class="animate-marquee whitespace-nowrap flex items-center">
+    <span class="mx-8 text-sm font-medium uppercase tracking-widest text-neutral-700">Order Tracking</span><span class="text-gold-400 mx-3 text-xs">◆</span>
+    <span class="mx-8 text-sm font-medium uppercase tracking-widest text-neutral-700">FAQ Automation</span><span class="text-gold-400 mx-3 text-xs">◆</span>
+    <span class="mx-8 text-sm font-medium uppercase tracking-widest text-neutral-700">Appointment Booking</span><span class="text-gold-400 mx-3 text-xs">◆</span>
+    <span class="mx-8 text-sm font-medium uppercase tracking-widest text-neutral-700">Product Catalog</span><span class="text-gold-400 mx-3 text-xs">◆</span>
+    <span class="mx-8 text-sm font-medium uppercase tracking-widest text-neutral-700">Payment Collection</span><span class="text-gold-400 mx-3 text-xs">◆</span>
+    <span class="mx-8 text-sm font-medium uppercase tracking-widest text-neutral-700">Lead Generation</span><span class="text-gold-400 mx-3 text-xs">◆</span>
+    <span class="mx-8 text-sm font-medium uppercase tracking-widest text-neutral-700">Multi-Language</span><span class="text-gold-400 mx-3 text-xs">◆</span>
+    <span class="mx-8 text-sm font-medium uppercase tracking-widest text-neutral-700">Order Tracking</span><span class="text-gold-400 mx-3 text-xs">◆</span>
+    <span class="mx-8 text-sm font-medium uppercase tracking-widest text-neutral-700">FAQ Automation</span><span class="text-gold-400 mx-3 text-xs">◆</span>
+    <span class="mx-8 text-sm font-medium uppercase tracking-widest text-neutral-700">Appointment Booking</span><span class="text-gold-400 mx-3 text-xs">◆</span>
+    <span class="mx-8 text-sm font-medium uppercase tracking-widest text-neutral-700">Product Catalog</span><span class="text-gold-400 mx-3 text-xs">◆</span>
+    <span class="mx-8 text-sm font-medium uppercase tracking-widest text-neutral-700">Payment Collection</span><span class="text-gold-400 mx-3 text-xs">◆</span>
+    <span class="mx-8 text-sm font-medium uppercase tracking-widest text-neutral-700">Lead Generation</span><span class="text-gold-400 mx-3 text-xs">◆</span>
+    <span class="mx-8 text-sm font-medium uppercase tracking-widest text-neutral-700">Multi-Language</span><span class="text-gold-400 mx-3 text-xs">◆</span>
+  </div>
+</section>
+
+<!-- ======== FEATURES ======== -->
+<section id="features" class="py-24 md:py-32">
+  <div class="max-w-screen-2xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <p class="text-xs font-semibold tracking-widest uppercase text-gold-400 mb-4">Features</p>
+      <h2 class="font-display text-4xl md:text-6xl font-700 tracking-tight leading-tight">Har cheez <span class="text-neutral-600">automated</span><span class="text-gold-400">.</span></h2>
+      <p class="mt-4 text-neutral-600 text-lg font-light max-w-xl mx-auto">Jo aapka staff karta hai, yeh bot karega — par 24 ghante, bina thake.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="feature-card rounded-sm p-8">
+        <div class="w-12 h-12 rounded-sm flex items-center justify-center mb-6" style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.1)">
+          <span class="iconify text-gold-400" data-icon="lucide:message-square-text" data-width="22"></span>
+        </div>
+        <h3 class="font-display text-xl font-600 tracking-tight mb-3 text-white">Smart Replies</h3>
+        <p class="text-sm text-neutral-500 leading-relaxed">AI samajhta hai Urdu, Roman Urdu, English — kisi bhi style mein accurate jawab deta hai.</p>
+      </div>
+      <div class="feature-card rounded-sm p-8">
+        <div class="w-12 h-12 rounded-sm flex items-center justify-center mb-6" style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.1)">
+          <span class="iconify text-gold-400" data-icon="lucide:package-search" data-width="22"></span>
+        </div>
+        <h3 class="font-display text-xl font-600 tracking-tight mb-3 text-white">Order Tracking</h3>
+        <p class="text-sm text-neutral-500 leading-relaxed">Customer order number bheje, bot turant status — confirmed, shipped, delivered, real-time.</p>
+      </div>
+      <div class="feature-card rounded-sm p-8">
+        <div class="w-12 h-12 rounded-sm flex items-center justify-center mb-6" style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.1)">
+          <span class="iconify text-gold-400" data-icon="lucide:calendar-check" data-width="22"></span>
+        </div>
+        <h3 class="font-display text-xl font-600 tracking-tight mb-3 text-white">Appointment Booking</h3>
+        <p class="text-sm text-neutral-500 leading-relaxed">Doctor, salon, gym — auto appointment booking with confirmation & reminders.</p>
+      </div>
+      <div class="feature-card rounded-sm p-8">
+        <div class="w-12 h-12 rounded-sm flex items-center justify-center mb-6" style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.1)">
+          <span class="iconify text-gold-400" data-icon="lucide:credit-card" data-width="22"></span>
+        </div>
+        <h3 class="font-display text-xl font-600 tracking-tight mb-3 text-white">Payment Collection</h3>
+        <p class="text-sm text-neutral-500 leading-relaxed">WhatsApp pe payment link — JazzCash, EasyPaisa, bank transfer — sab integrated.</p>
+      </div>
+      <div class="feature-card rounded-sm p-8">
+        <div class="w-12 h-12 rounded-sm flex items-center justify-center mb-6" style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.1)">
+          <span class="iconify text-gold-400" data-icon="lucide:shopping-bag" data-width="22"></span>
+        </div>
+        <h3 class="font-display text-xl font-600 tracking-tight mb-3 text-white">Product Catalog</h3>
+        <p class="text-sm text-neutral-500 leading-relaxed">Images, prices, descriptions — WhatsApp pe. Browse karein, order karein, wahi pe.</p>
+      </div>
+      <div class="feature-card rounded-sm p-8">
+        <div class="w-12 h-12 rounded-sm flex items-center justify-center mb-6" style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.1)">
+          <span class="iconify text-gold-400" data-icon="lucide:languages" data-width="22"></span>
+        </div>
+        <h3 class="font-display text-xl font-600 tracking-tight mb-3 text-white">Multi-Language</h3>
+        <p class="text-sm text-neutral-500 leading-relaxed">Urdu, English, Roman Urdu, Arabic — bot automatically language detect karta hai.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== LIVE DEMO ======== -->
+<section id="demo" class="py-24 md:py-32">
+  <div class="divider-gold mb-24"></div>
+  <div class="max-w-screen-2xl mx-auto px-6">
+    <div class="text-center mb-12">
+      <p class="text-xs font-semibold tracking-widest uppercase text-gold-400 mb-4">Live Demo</p>
+      <h2 class="font-display text-4xl md:text-6xl font-700 tracking-tight leading-tight">Khud <span class="text-neutral-600">try</span> karein<span class="text-gold-400">.</span></h2>
+      <p class="mt-4 text-neutral-600 text-lg font-light max-w-xl mx-auto">Neeche chat mein likhein — dekhein bot kaise jawab deta hai.</p>
+    </div>
+    <div class="max-w-md mx-auto">
+      <div class="chat-container rounded-2xl overflow-hidden border animate-glow" style="border-color:rgba(212,175,55,.12)">
+        <div class="px-4 py-3 flex items-center gap-3" style="background:rgba(22,27,34,.95);border-bottom:1px solid rgba(212,175,55,.08)">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,rgba(212,175,55,.15),rgba(212,175,55,.05))">
+            <span class="iconify text-gold-400" data-icon="lucide:bot" data-width="20"></span>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm font-medium text-white">AI Business Assistant</p>
+            <p class="text-[10px] text-gold-400 flex items-center gap-1"><span class="w-1.5 h-1.5 bg-gold-400 rounded-full inline-block"></span> Online — Demo Mode</p>
+          </div>
+        </div>
+        <div id="chatMessages" class="px-4 py-4 space-y-3 h-[420px] overflow-y-auto" style="scroll-behavior:smooth">
+          <div class="msg-left flex justify-start">
+            <div class="bubble-left px-3 py-2 max-w-[85%]">
+              <p class="text-sm text-[#e0ddd5]">Assalam o Alaikum! 👋 Main aapka AI assistant hoon.</p>
+              <p class="text-sm text-[#e0ddd5] mt-1">Aap mujh se puch sakte hain:</p>
+              <p class="text-sm text-[#e0ddd5] mt-1">📦 Order status &nbsp; 💰 Prices</p>
+              <p class="text-sm text-[#e0ddd5]">🕐 Timings &nbsp; 📍 Location</p>
+              <p class="text-sm text-[#e0ddd5] mt-1">Ya kuch bhi poochein! 😊</p>
+              <p class="text-[10px] text-neutral-600 text-right mt-1">10:30 AM</p>
+            </div>
+          </div>
+        </div>
+        <div id="quickReplies" class="px-4 py-2 flex gap-2 flex-wrap" style="border-top:1px solid rgba(212,175,55,.06)">
+          <button class="quick-reply text-xs text-gold-400 rounded-full px-3 py-1.5" onclick="sendQuickReply('Order ki status batao')">📦 Order</button>
+          <button class="quick-reply text-xs text-gold-400 rounded-full px-3 py-1.5" onclick="sendQuickReply('Prices kya hain?')">💰 Prices</button>
+          <button class="quick-reply text-xs text-gold-400 rounded-full px-3 py-1.5" onclick="sendQuickReply('Timing kya hai?')">🕐 Timing</button>
+          <button class="quick-reply text-xs text-gold-400 rounded-full px-3 py-1.5" onclick="sendQuickReply('Location batao')">📍 Location</button>
+          <button class="quick-reply text-xs text-gold-400 rounded-full px-3 py-1.5" onclick="sendQuickReply('Payment kaise karein?')">💳 Payment</button>
+        </div>
+        <div class="px-3 py-2.5 flex items-center gap-2" style="background:rgba(22,27,34,.9);border-top:1px solid rgba(212,175,55,.06)">
+          <span class="iconify text-neutral-600" data-icon="lucide:smile" data-width="22"></span>
+          <input id="chatInput" type="text" placeholder="Message type karein..." class="chat-input flex-1 bg-transparent text-sm text-[#e0ddd5] placeholder-neutral-700 py-2" onkeydown="if(event.key==='Enter')sendMessage()" />
+          <button onclick="sendMessage()" class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200 hover:scale-105" style="background:linear-gradient(135deg,#D4AF37,#9A7B2C)">
+            <span class="iconify text-black" data-icon="lucide:send" data-width="15"></span>
+          </button>
+        </div>
+      </div>
+      <p class="text-center text-xs text-neutral-700 mt-4">Yeh demo hai — actual bot aapke business ke liye custom banega</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======== DASHBOARD PREVIEW ======== -->
+<section id="dashboard" class="py-24 md:py-32">
+  <div class="divider-gold mb-24"></div>
+  <div class="max-w-screen-2xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <p class="text-xs font-semibold tracking-widest uppercase text-gold-400 mb-4">Dashboard</p>
+      <h2 class="font-display text-4xl md:text-6xl font-700 tracking-tight leading-tight">Sab kuch <span class="text-neutral-600">control</span> mein<span class="text-gold-400">.</span></h2>
+      <p class="mt-4 text-neutral-600 text-lg font-light max-w-xl mx-auto">Real-time analytics, message logs, customer data — ek dashboard pe sab.</p>
+    </div>
+    <div class="max-w-4xl mx-auto rounded-2xl overflow-hidden border p-1" style="border-color:rgba(212,175,55,.1);background:rgba(10,10,10,.8)">
+      <!-- Dashboard Header -->
+      <div class="px-6 py-4 flex items-center justify-between" style="border-bottom:1px solid rgba(212,175,55,.06)">
+        <div class="flex items-center gap-3">
+          <div class="w-3 h-3 rounded-full bg-gold-400/40"></div>
+          <div class="w-3 h-3 rounded-full bg-gold-400/25"></div>
+          <div class="w-3 h-3 rounded-full bg-gold-400/10"></div>
+          <span class="text-xs text-neutral-600 ml-3">dashboard.wabot.pk</span>
+        </div>
+        <span class="text-xs text-neutral-700">Live</span>
+      </div>
+      <!-- Dashboard Content -->
+      <div class="p-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="rounded-sm p-4" style="background:rgba(212,175,55,.03);border:1px solid rgba(212,175,55,.06)">
+          <p class="text-xs text-neutral-600 mb-1">Total Messages</p>
+          <p class="font-display text-2xl font-700 text-white">12,847</p>
+          <p class="text-xs text-gold-400 mt-1">↑ 23% this week</p>
+        </div>
+        <div class="rounded-sm p-4" style="background:rgba(212,175,55,.03);border:1px solid rgba(212,175,55,.06)">
+          <p class="text-xs text-neutral-600 mb-1">Active Chats</p>
+          <p class="font-display text-2xl font-700 text-white">342</p>
+          <p class="text-xs text-gold-400 mt-1">↑ 12% today</p>
+        </div>
+        <div class="rounded-sm p-4" style="background:rgba(212,175,55,.03);border:1px solid rgba(212,175,55,.06)">
+          <p class="text-xs text-neutral-600 mb-1">Orders via Bot</p>
+          <p class="font-display text-2xl font-700 text-white">1,256</p>
+          <p class="text-xs text-gold-400 mt-1">PKR 8.4L value</p>
+        </div>
+        <div class="rounded-sm p-4" style="background:rgba(212,175,55,.03);border:1px solid rgba(212,175,55,.06)">
+          <p class="text-xs text-neutral-600 mb-1">Satisfaction</p>
+          <p class="font-display text-2xl font-700 text-white">96.8%</p>
+          <p class="text-xs text-gold-400 mt-1">↑ 2.1% this month</p>
+        </div>
+      </div>
+      <!-- Mini Chart -->
+      <div class="px-6 pb-6">
+        <div class="rounded-sm p-4" style="background:rgba(212,175,55,.02);border:1px solid rgba(212,175,55,.06)">
+          <p class="text-xs text-neutral-600 mb-4">Messages This Week</p>
+          <div class="flex items-end gap-2 h-24">
+            <div class="flex-1 rounded-sm" style="background:linear-gradient(180deg,rgba(212,175,55,.3),rgba(212,175,55,.05));height:40%"></div>
+            <div class="flex-1 rounded-sm" style="background:linear-gradient(180deg,rgba(212,175,55,.3),rgba(212,175,55,.05));height:55%"></div>
+            <div class="flex-1 rounded-sm" style="background:linear-gradient(180deg,rgba(212,175,55,.3),rgba(212,175,55,.05));height:45%"></div>
+            <div class="flex-1 rounded-sm" style="background:linear-gradient(180deg,rgba(212,175,55,.3),rgba(212,175,55,.05));height:70%"></div>
+            <div class="flex-1 rounded-sm" style="background:linear-gradient(180deg,rgba(212,175,55,.3),rgba(212,175,55,.05));height:85%"></div>
+            <div class="flex-1 rounded-sm" style="background:linear-gradient(180deg,rgba(212,175,55,.5),rgba(212,175,55,.1));height:100%"></div>
+            <div class="flex-1 rounded-sm" style="background:linear-gradient(180deg,rgba(212,175,55,.4),rgba(212,175,55,.08));height:75%"></div>
+          </div>
+          <div class="flex justify-between mt-2">
+            <span class="text-[10px] text-neutral-700">Mon</span>
+            <span class="text-[10px] text-neutral-700">Tue</span>
+            <span class="text-[10px] text-neutral-700">Wed</span>
+            <span class="text-[10px] text-neutral-700">Thu</span>
+            <span class="text-[10px] text-neutral-700">Fri</span>
+            <span class="text-[10px] text-gold-400 font-medium">Sat</span>
+            <span class="text-[10px] text-neutral-700">Sun</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== PRICING ======== -->
+<section id="pricing" class="py-24 md:py-32">
+  <div class="divider-gold mb-24"></div>
+  <div class="max-w-screen-2xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <p class="text-xs font-semibold tracking-widest uppercase text-gold-400 mb-4">Pricing</p>
+      <h2 class="font-display text-4xl md:text-6xl font-700 tracking-tight leading-tight">Affordable <span class="text-neutral-600">plans</span><span class="text-gold-400">.</span></h2>
+      <p class="mt-4 text-neutral-600 text-lg font-light max-w-xl mx-auto">Har budget ke liye — chhote business se enterprise tak.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
+      <!-- Starter -->
+      <div class="pricing-card rounded-sm p-8">
+        <p class="text-xs font-semibold tracking-widest uppercase text-neutral-600 mb-2">Starter</p>
+        <div class="flex items-baseline gap-1 mb-6">
+          <span class="font-display text-4xl font-700 text-white">PKR 5k</span>
+          <span class="text-sm text-neutral-600">/mo</span>
+        </div>
+        <div class="space-y-3 mb-8">
+          <div class="flex items-center gap-3"><span class="iconify text-gold-400" data-icon="lucide:check" data-width="16"></span><span class="text-sm text-neutral-400">500 messages/month</span></div>
+          <div class="flex items-center gap-3"><span class="iconify text-gold-400" data-icon="lucide:check" data-width="16"></span><span class="text-sm text-neutral-400">Basic FAQ bot</span></div>
+          <div class="flex items-center gap-3"><span class="iconify text-gold-400" data-icon="lucide:check" data-width="16"></span><span class="text-sm text-neutral-400">1 WhatsApp number</span></div>
+          <div class="flex items-center gap-3"><span class="iconify text-neutral-800" data-icon="lucide:x" data-width="16"></span><span class="text-sm text-neutral-700">Order tracking</span></div>
+          <div class="flex items-center gap-3"><span class="iconify text-neutral-800" data-icon="lucide:x" data-width="16"></span><span class="text-sm text-neutral-700">Dashboard</span></div>
+        </div>
+        <a href="https://wa.me/923209206957?text=Assalam%20o%20Alaikum!%20Mujhe%20Starter%20plan%20chahiye." target="_blank" class="btn-outline-gold block text-center px-6 py-3 text-xs font-medium uppercase tracking-widest rounded-sm">Choose Plan</a>
+      </div>
+      <!-- Pro -->
+      <div class="pricing-card rounded-sm p-8 relative" style="border:2px solid #D4AF37;background:rgba(212,175,55,.02)">
+        <div class="absolute -top-3 left-8 text-black text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-sm" style="background:linear-gradient(135deg,#D4AF37,#F0D060)">Popular</div>
+        <p class="text-xs font-semibold tracking-widest uppercase text-gold-400 mb-2">Pro</p>
+        <div class="flex items-baseline gap-1 mb-6">
+          <span class="font-display text-4xl font-700 text-white">PKR 15k</span>
+          <span class="text-sm text-neutral-600">/mo</span>
+        </div>
+        <div class="space-y-3 mb-8">
+          <div class="flex items-center gap-3"><span class="iconify text-gold-400" data-icon="lucide:check" data-width="16"></span><span class="text-sm text-neutral-400">5,000 messages/month</span></div>
+          <div class="flex items-center gap-3"><span class="iconify text-gold-400" data-icon="lucide:check" data-width="16"></span><span class="text-sm text-neutral-400">Full AI chatbot</span></div>
+          <div class="flex items-center gap-3"><span class="iconify text-gold-400" data-icon="lucide:check" data-width="16"></span><span class="text-sm text-neutral-400">Order tracking</span></div>
+          <div class="flex items-center gap-3"><span class="iconify text-gold-400" data-icon="lucide:check" data-width="16"></span><span class="text-sm text-neutral-400">Product catalog</span></div>
+          <div class="flex items-center gap-3"><span class="iconify text-gold-400" data-icon="lucide:check" data-width="16"></span><span class="text-sm text-neutral-400">Analytics dashboard</span></div>
+        </div>
+        <a href="https://wa.me/923209206957?text=Assalam%20o%20Alaikum!%20Mujhe%20Pro%20plan%20chahiye." target="_blank" class="btn-gold block text-center px-6 py-3 text-xs font-bold uppercase tracking-widest rounded-sm">Choose Plan</a>
+      </div>
+      <!-- Enterprise -->
+      <div class="pricing-card rounded-sm p-8">
+        <p class="text-xs font-semibold tracking-widest uppercase text-neutral-600 mb-2">Enterprise</p>
+        <div class="flex items-baseline gap-1 mb-6">
+          <span class="font-display text-4xl font-700 text-white">Custom</span>
+        </div>
+        <div class="space-y-3 mb-8">
+          <div class="flex items-center gap-3"><span class="iconify text-gold-400" data-icon="lucide:check" data-width="16"></span><span class="text-sm text-neutral-400">Unlimited messages</span></div>
+          <div class="flex items-center gap-3"><span class="iconify text-gold-400" data-icon="lucide:check" data-width="16"></span><span class="text-sm text-neutral-400">Advanced AI + CRM</span></div>
+          <div class="flex items-center gap-3"><span class="iconify text-gold-400" data-icon="lucide:check" data-width="16"></span><span class="text-sm text-neutral-400">Payment integration</span></div>
+          <div class="flex items-center gap-3"><span class="iconify text-gold-400" data-icon="lucide:check" data-width="16"></span><span class="text-sm text-neutral-400">Multi-agent support</span></div>
+          <div class="flex items-center gap-3"><span class="iconify text-gold-400" data-icon="lucide:check" data-width="16"></span><span class="text-sm text-neutral-400">Dedicated manager</span></div>
+        </div>
+        <a href="https://wa.me/923209206957?text=Assalam%20o%20Alaikum!%20Mujhe%20Enterprise%20plan%20ke%20baare%20mein%20baat%20karni%20hai." target="_blank" class="btn-outline-gold block text-center px-6 py-3 text-xs font-medium uppercase tracking-widest rounded-sm">Contact Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== TESTIMONIALS ======== -->
+<section class="py-24 md:py-32">
+  <div class="divider-gold mb-24"></div>
+  <div class="max-w-screen-2xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <p class="text-xs font-semibold tracking-widest uppercase text-gold-400 mb-4">Testimonials</p>
+      <h2 class="font-display text-4xl md:text-5xl font-700 tracking-tight leading-tight">Log kya <span class="text-neutral-600">kehte hain</span><span class="text-gold-400">?</span></h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
+      <div class="rounded-sm p-8" style="border:1px solid rgba(212,175,55,.06)">
+        <div class="flex gap-0.5 mb-4"><span class="text-gold-400 text-sm">★</span><span class="text-gold-400 text-sm">★</span><span class="text-gold-400 text-sm">★</span><span class="text-gold-400 text-sm">★</span><span class="text-gold-400 text-sm">★</span></div>
+        <p class="text-sm text-neutral-400 leading-relaxed mb-6">"Bot lagane ke baad order volume 3x ho gaya. Customers raat ko bhi order karte hain — bot turant handle kar leta hai."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold" style="background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(212,175,55,.05));color:#D4AF37">AH</div>
+          <div><p class="text-sm font-medium text-white">Ahmed Hassan</p><p class="text-xs text-neutral-600">Clothing Brand, Lahore</p></div>
+        </div>
+      </div>
+      <div class="rounded-sm p-8" style="border:1px solid rgba(212,175,55,.06)">
+        <div class="flex gap-0.5 mb-4"><span class="text-gold-400 text-sm">★</span><span class="text-gold-400 text-sm">★</span><span class="text-gold-400 text-sm">★</span><span class="text-gold-400 text-sm">★</span><span class="text-gold-400 text-sm">★</span></div>
+        <p class="text-sm text-neutral-400 leading-relaxed mb-6">"Clinic mein receptionist ki problems khatam. Patients WhatsApp pe appointment book karte hain automatically. Best investment!"</p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold" style="background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(212,175,55,.05));color:#D4AF37">FK</div>
+          <div><p class="text-sm font-medium text-white">Dr. Fatima Khan</p><p class="text-xs text-neutral-600">Dental Clinic, Islamabad</p></div>
+        </div>
+      </div>
+      <div class="rounded-sm p-8" style="border:1px solid rgba(212,175,55,.06)">
+        <div class="flex gap-0.5 mb-4"><span class="text-gold-400 text-sm">★</span><span class="text-gold-400 text-sm">★</span><span class="text-gold-400 text-sm">★</span><span class="text-gold-400 text-sm">★</span><span class="text-neutral-700 text-sm">★</span></div>
+        <p class="text-sm text-neutral-400 leading-relaxed mb-6">"Restaurant ki delivery orders WhatsApp se aani shuru. Bot menu bhejta hai, order note karta hai. Amazing experience!"</p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold" style="background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(212,175,55,.05));color:#D4AF37">UR</div>
+          <div><p class="text-sm font-medium text-white">Usman Raza</p><p class="text-xs text-neutral-600">Restaurant, Karachi</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== CONTACT CTA ======== -->
+<section id="contact" class="py-24 md:py-32">
+  <div class="divider-gold mb-24"></div>
+  <div class="max-w-screen-2xl mx-auto px-6 text-center">
+    <p class="text-xs font-semibold tracking-widest uppercase text-gold-400 mb-6">Abhi Shuru Karein</p>
+    <h2 class="font-display text-5xl md:text-7xl lg:text-8xl font-800 tracking-tighter leading-none">
+      <span class="gold-shimmer">Order karein</span><span class="text-neutral-600">.</span>
+    </h2>
+    <p class="mt-8 text-lg font-light text-neutral-500 max-w-lg mx-auto leading-relaxed">
+      WhatsApp pe message karein ya form fill karein — hum 5 minute mein reply karenge.
+    </p>
+    <div class="mt-10 flex flex-wrap justify-center gap-4">
+      <a href="https://wa.me/923209206957?text=Assalam%20o%20Alaikum!%20Mujhe%20AI%20WhatsApp%20chatbot%20chahiye." target="_blank" class="btn-gold inline-flex items-center gap-3 px-10 py-4 text-xs font-bold uppercase tracking-widest rounded-sm">
+        <span class="iconify" data-icon="lucide:message-circle" data-width="18"></span>
+        WhatsApp: 0320-9206957
+      </a>
+      <button onclick="showContactForm()" class="btn-outline-gold inline-flex items-center gap-2 px-8 py-4 text-xs font-medium uppercase tracking-widest rounded-sm">
+        Form Fill Karein
+      </button>
+    </div>
+
+    <!-- Contact Form -->
+    <div id="contactForm" class="max-w-md mx-auto mt-12 hidden">
+      <div class="rounded-sm p-8 text-left" style="border:1px solid rgba(212,175,55,.1);background:rgba(10,10,10,.5)">
+        <div class="space-y-4">
+          <div>
+            <label class="text-xs text-gold-400/70 uppercase tracking-widest mb-2 block">Naam</label>
+            <input id="formName" type="text" placeholder="Aapka naam" class="w-full bg-neutral-900/50 rounded-sm px-4 py-3 text-sm text-white placeholder-neutral-700 focus:outline-none transition-colors duration-300" style="border:1px solid rgba(212,175,55,.08)" onfocus="this.style.borderColor='rgba(212,175,55,.3)'" onblur="this.style.borderColor='rgba(212,175,55,.08)'" />
+          </div>
+          <div>
+            <label class="text-xs text-gold-400/70 uppercase tracking-widest mb-2 block">WhatsApp Number</label>
+            <input id="formPhone" type="tel" placeholder="0300-1234567" class="w-full bg-neutral-900/50 rounded-sm px-4 py-3 text-sm text-white placeholder-neutral-700 focus:outline-none transition-colors duration-300" style="border:1px solid rgba(212,175,55,.08)" onfocus="this.style.borderColor='rgba(212,175,55,.3)'" onblur="this.style.borderColor='rgba(212,175,55,.08)'" />
+          </div>
+          <div>
+            <label class="text-xs text-gold-400/70 uppercase tracking-widest mb-2 block">Business Type</label>
+            <select id="formBusiness" class="w-full bg-neutral-900/50 rounded-sm px-4 py-3 text-sm text-neutral-400 focus:outline-none transition-colors duration-300" style="border:1px solid rgba(212,175,55,.08)" onfocus="this.style.borderColor='rgba(212,175,55,.3)'" onblur="this.style.borderColor='rgba(212,175,55,.08)'">
+              <option value="">Select karein</option>
+              <option value="store">Online Store / E-Commerce</option>
+              <option value="restaurant">Restaurant / Food</option>
+              <option value="clinic">Clinic / Hospital</option>
+              <option value="education">Education / Academy</option>
+              <option value="real_estate">Real Estate</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs text-gold-400/70 uppercase tracking-widest mb-2 block">Message</label>
+            <textarea id="formMessage" rows="3" placeholder="Apni requirement likhein..." class="w-full bg-neutral-900/50 rounded-sm px-4 py-3 text-sm text-white placeholder-neutral-700 focus:outline-none transition-colors duration-300 resize-none" style="border:1px solid rgba(212,175,55,.08)" onfocus="this.style.borderColor='rgba(212,175,55,.3)'" onblur="this.style.borderColor='rgba(212,175,55,.08)'"></textarea>
+          </div>
+          <button onclick="submitForm()" class="btn-gold w-full px-6 py-4 text-xs font-bold uppercase tracking-widest rounded-sm flex items-center justify-center gap-2">
+            <span class="iconify" data-icon="lucide:send" data-width="14"></span>
+            Submit Karein
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-12 inline-flex items-center gap-3">
+      <span class="relative flex h-2.5 w-2.5">
+        <span class="animate-ping-custom absolute inline-flex h-full w-full rounded-full bg-gold-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-gold-400"></span>
+      </span>
+      <span class="text-sm text-neutral-500">Abhi available hain — reply sirf 5 min mein</span>
+    </div>
+  </div>
+</section>
+
+<!-- ======== FOOTER ======== -->
+<footer class="py-16" style="border-top:1px solid rgba(212,175,55,.06)">
+  <div class="max-w-screen-2xl mx-auto px-6">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-12">
+      <div class="md:col-span-5">
+        <a href="#" class="font-display text-2xl font-700 tracking-tight text-white flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-sm flex items-center justify-center" style="background:linear-gradient(135deg,#D4AF37,#9A7B2C)">
+            <span class="iconify text-black" data-icon="lucide:bot" data-width="16"></span>
+          </div>
+          WA<span class="text-gold-400">Bot</span>
+        </a>
+        <p class="mt-4 text-sm text-neutral-500 max-w-xs leading-relaxed">Pakistan ka #1 AI WhatsApp chatbot. Aapka business, automated — 24/7.</p>
+        <div class="mt-6 flex items-center gap-5">
+          <a href="https://wa.me/923209206957" target="_blank" class="social-icon text-neutral-600" aria-label="WhatsApp"><span class="iconify" data-icon="lucide:message-circle" data-width="18"></span></a>
+          <a href="#" class="social-icon text-neutral-600" aria-label="Instagram"><span class="iconify" data-icon="lucide:instagram" data-width="18"></span></a>
+          <a href="#" class="social-icon text-neutral-600" aria-label="Facebook"><span class="iconify" data-icon="lucide:facebook" data-width="18"></span></a>
+          <a href="#" class="social-icon text-neutral-600" aria-label="Twitter"><span class="iconify" data-icon="lucide:twitter" data-width="18"></span></a>
+        </div>
+      </div>
+      <div class="md:col-span-2">
+        <p class="text-xs font-semibold tracking-widest uppercase text-neutral-600 mb-4">Links</p>
+        <div class="flex flex-col gap-3">
+          <a href="#features" class="text-sm text-neutral-500 hover:text-gold-400 transition-colors duration-300">Features</a>
+          <a href="#demo" class="text-sm text-neutral-500 hover:text-gold-400 transition-colors duration-300">Demo</a>
+          <a href="#pricing" class="text-sm text-neutral-500 hover:text-gold-400 transition-colors duration-300">Pricing</a>
+          <a href="#contact" class="text-sm text-neutral-500 hover:text-gold-400 transition-colors duration-300">Contact</a>
+        </div>
+      </div>
+      <div class="md:col-span-2">
+        <p class="text-xs font-semibold tracking-widest uppercase text-neutral-600 mb-4">Businesses</p>
+        <div class="flex flex-col gap-3">
+          <a href="#" class="text-sm text-neutral-500 hover:text-gold-400 transition-colors duration-300">E-Commerce</a>
+          <a href="#" class="text-sm text-neutral-500 hover:text-gold-400 transition-colors duration-300">Restaurants</a>
+          <a href="#" class="text-sm text-neutral-500 hover:text-gold-400 transition-colors duration-300">Clinics</a>
+          <a href="#" class="text-sm text-neutral-500 hover:text-gold-400 transition-colors duration-300">Real Estate</a>
+        </div>
+      </div>
+      <div class="md:col-span-3">
+        <p class="text-xs font-semibold tracking-widest uppercase text-neutral-600 mb-4">Contact</p>
+        <div class="space-y-2">
+          <a href="https://wa.me/923209206957" target="_blank" class="flex items-center gap-2 text-sm text-gold-400 hover:text-gold-300 transition-colors duration-300">
+            <span class="iconify" data-icon="lucide:message-circle" data-width="14"></span>
+            0320-9206957
+          </a>
+          <p class="flex items-center gap-2 text-sm text-neutral-500">
+            <span class="iconify" data-icon="lucide:mail" data-width="14"></span>
+            hello@wabot.pk
+          </p>
+          <p class="flex items-center gap-2 text-sm text-neutral-500">
+            <span class="iconify" data-icon="lucide:map-pin" data-width="14"></span>
+            Lahore, Pakistan
+          </p>
+          <p class="text-xs text-neutral-700 mt-2">🌐 Poora Pakistan mein service available</p>
+        </div>
+      </div>
+    </div>
+    <div class="mt-16 pt-8 flex flex-col md:flex-row items-center justify-between gap-4" style="border-top:1px solid rgba(212,175,55,.04)">
+      <p class="text-xs text-neutral-700">© 2024 WA Bot. All rights reserved.</p>
+      <p class="text-xs text-neutral-700">Made with <span class="text-gold-400">◆</span> in Pakistan</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Toast -->
+<div id="toast" class="toast">
+  <div class="flex items-center gap-3">
+    <span class="iconify text-gold-400" data-icon="lucide:check-circle" data-width="16"></span>
+    <span id="toastMessage">Success!</span>
+  </div>
+</div>
+
+<script>
+// ===== MOBILE MENU =====
+const menuBtn=document.getElementById('menuBtn'),mobileMenu=document.getElementById('mobileMenu');
+let menuOpen=false;
+menuBtn.addEventListener('click',()=>{menuOpen=!menuOpen;mobileMenu.style.maxHeight=menuOpen?'400px':'0';menuBtn.innerHTML=menuOpen?'<span class="iconify" data-icon="lucide:x" data-width="24"></span>':'<span class="iconify" data-icon="lucide:menu" data-width="24"></span>'});
+document.querySelectorAll('.mobile-link').forEach(l=>{l.addEventListener('click',()=>{menuOpen=false;mobileMenu.style.maxHeight='0';menuBtn.innerHTML='<span class="iconify" data-icon="lucide:menu" data-width="24"></span>'})});
+
+// ===== TOAST =====
+function showToast(m){const t=document.getElementById('toast');document.getElementById('toastMessage').textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500)}
+
+// ===== CONTACT FORM =====
+function showContactForm(){const f=document.getElementById('contactForm');f.classList.toggle('hidden');if(!f.classList.contains('hidden'))f.scrollIntoView({behavior:'smooth',block:'center'})}
+function submitForm(){
+  const n=document.getElementById('formName').value.trim(),p=document.getElementById('formPhone').value.trim(),b=document.getElementById('formBusiness').value,m=document.getElementById('formMessage').value.trim();
+  if(!n||!p){showToast('⚠️ Naam aur WhatsApp number zaruri hai');return}
+  const msg=`Assalam o Alaikum! Maine form submit kiya:\n\nNaam: ${n}\nNumber: ${p}\nBusiness: ${b||'N/A'}\nMessage: ${m||'N/A'}`;
+  window.open(`https://wa.me/923209206957?text=${encodeURIComponent(msg)}`,'_blank');
+  showToast('✅ Shukriya '+n+'! WhatsApp pe redirect ho rahe hain...');
+  document.getElementById('formName').value='';document.getElementById('formPhone').value='';document.getElementById('formBusiness').value='';document.getElementById('formMessage').value='';
+}
+
+// ===== CHAT BOT =====
+const chatMessages=document.getElementById('chatMessages'),chatInput=document.getElementById('chatInput');
+function getTime(){const d=new Date();let h=d.getHours();const m=d.getMinutes().toString().padStart(2,'0'),ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+m+' '+ap}
+function addMessage(text,side){const div=document.createElement('div');div.className=side==='left'?'msg-left flex justify-start':'msg-right flex justify-end';const bc=side==='left'?'bubble-left':'bubble-right';const tk=side==='right'?'<span class="iconify text-gold-400" data-icon="lucide:check-check" data-width="12"></span>':'';div.innerHTML=`<div class="${bc} px-3 py-2 max-w-[85%]"><p class="text-sm text-[#e0ddd5]">${text}</p><p class="text-[10px] text-neutral-600 text-right mt-1 flex items-center justify-end gap-1">${getTime()} ${tk}</p></div>`;chatMessages.appendChild(div);chatMessages.scrollTop=chatMessages.scrollHeight}
+function addTyping(){const d=document.createElement('div');d.id='typing';d.className='msg-left flex justify-start';d.innerHTML=`<div class="bubble-left px-4 py-3"><div class="flex gap-1"><span class="typing-dot w-2 h-2 bg-gold-400/50 rounded-full inline-block"></span><span class="typing-dot w-2 h-2 bg-gold-400/50 rounded-full inline-block"></span><span class="typing-dot w-2 h-2 bg-gold-400/50 rounded-full inline-block"></span></div></div>`;chatMessages.appendChild(d);chatMessages.scrollTop=chatMessages.scrollHeight}
+function removeTyping(){const e=document.getElementById('typing');if(e)e.remove()}
+
+function getBotResponse(msg){
+  const l=msg.toLowerCase();
+  if(l.includes('order')&&(l.includes('status')||l.includes('track')||l.includes('kaisa')))return '📦 Order tracking ke liye order number bhej dein.\n\nJaise: <span class="text-gold-400 font-medium">VO-7842</span>\n\nMain turant status bata dunga!';
+  if(l.match(/vo-\d+/i)||l.match(/ord-\d+/i)||l.match(/\d{4,}/)){const s=['Confirmed ✅','Packed 📦','Shipped 🚚','Out for Delivery 🏍️','Delivered ✅'];return `Order #<span class="text-white font-medium">${msg.toUpperCase()}</span>\n\nStatus: <span class="text-gold-400 font-medium">${s[Math.floor(Math.random()*s.length)]}</span>\nEst. Delivery: <span class="text-white font-medium">Kal 5:00 PM</span>\n\nKoi aur sawal? 😊`}
+  if(l.includes('price')||l.includes('rate')||l.includes('cost')||l.includes('kitna')||l.includes('paisa'))return '💰 Humare 3 plans hain:\n\n<span class="text-white font-medium">Starter:</span> PKR 5,000/mo\n<span class="text-white font-medium">Pro:</span> PKR 15,000/mo ⭐\n<span class="text-white font-medium">Enterprise:</span> Custom\n\nWhatsApp pe <span class="text-gold-400 font-medium">0320-9206957</span> call karein details ke liye!';
+  if(l.includes('time')||l.includes('timing')||l.includes('kitne baje')||l.includes('kab'))return '🕐 Office timings:\n\n<span class="text-white font-medium">Mon - Sat:</span> 9 AM - 9 PM\n<span class="text-white font-medium">Sunday:</span> 2 PM - 8 PM\n\n<span class="text-gold-400">Bot toh 24/7 kaam karta hai! 🤖</span>';
+  if(l.includes('locat')||l.includes('kahan')||l.includes('address')||l.includes('kidhar'))return '📍 Lahore, Pakistan\n\n<span class="text-gold-400">WhatsApp:</span> 0320-9206957\nVisit ke liye pehle call karein! 🗺️';
+  if(l.includes('payment')||l.includes('pay')||l.includes('jazz')||l.includes('easypaisa')||l.includes('bank'))return '💳 Payment methods:\n\n<span class="text-white font-medium">JazzCash:</span> 0320-9206957\n<span class="text-white font-medium">EasyPaisa:</span> 0320-9206957\n<span class="text-white font-medium">Bank:</span> Available\n\nScreenshot bhej dein — turant confirm! ✅';
+  if(l.includes('salam')||l.includes('assalam')||l.includes('hello')||l.includes('hi')||l.includes('hey')||l.includes('aoa'))return 'Walaikum Assalam! 🙋‍♂️\n\nMain AI assistant hoon. Puch sakte hain:\n\n📦 Order status\n💰 Prices & plans\n🕐 Timings\n📍 Location\n💳 Payment\n\nYa kuch bhi! 😊';
+  if(l.includes('shukriya')||l.includes('thank'))return 'Aapka shukriya! 🤲\n\nKoi aur sawal ho toh poochein. 24/7 available hoon! 😊';
+  if(l.includes('appointment')||l.includes('book')||l.includes('mill'))return '📅 Appointment booking!\n\nBatayein:\n1. <span class="text-white font-medium">Kis date?</span>\n2. <span class="text-white font-medium">Kis time?</span>\n\nTurant confirm kar dunga! ✅';
+  if(l.includes('menu')||l.includes('product')||l.includes('catalog'))return '🛍️ Top products:\n\n1. <span class="text-white font-medium">Basic Bot</span> — PKR 5k/mo\n2. <span class="text-white font-medium">Pro Bot</span> — PKR 15k/mo\n3. <span class="text-white font-medium">Custom Bot</span> — PKR 25k+/mo\n\nDetails chahiye? 📋';
+  if(l.includes('refund')||l.includes('return')||l.includes('wapis'))return '🔄 Return Policy:\n\n<span class="text-white font-medium">7 din</span> mein return possible.\n\nOrder number bhejien, process start kardunga.';
+  const d=['Achha samajh gaya! 🤔 Yeh matter team ko forward karta hoon. WhatsApp pe 0320-9206957 call karein detail ke liye.','Ji bilkul! 📝 Request note kar li. Kuch aur?','Yeh interesting hai! 😊 Detail ke liye 0320-9206957 pe call karein.','Main is pe limited info de sakta hoon. 📞 0320-9206957 pe baat karein.'];
+  return d[Math.floor(Math.random()*d.length)];
+}
+
+function sendBotResponse(m){addTyping();setTimeout(()=>{removeTyping();addMessage(getBotResponse(m),'left')},800+Math.random()*1000)}
+function sendMessage(){const t=chatInput.value.trim();if(!t)return;addMessage(t,'right');chatInput.value='';sendBotResponse(t)}
+function sendQuickReply(t){addMessage(t,'right');sendBotResponse(t)}
+
+// ===== SCROLL ANIMATIONS =====
+const obs=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){en.target.style.opacity='1';en.target.style.transform='translateY(0)';obs.unobserve(en.target)}})},{threshold:.1,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('section').forEach(s=>{s.style.opacity='0';s.style.transform='translateY(30px)';s.style.transition='opacity .8s ease-out,transform .8s ease-out';obs.observe(s)});
+const ft=document.querySelector('footer');ft.style.opacity='0';ft.style.transform='translateY(30px)';ft.style.transition='opacity .8s ease-out,transform .8s ease-out';obs.observe(ft);
+</script>
+</body>
+</html>
